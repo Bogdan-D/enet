@@ -2,6 +2,35 @@ AC_INIT([libenet], [1.3.13])
 AC_CONFIG_SRCDIR([include/enet/enet.h])
 AM_INIT_AUTOMAKE([foreign])
 
+# AC_CANONICAL_HOST is needed to access the 'host_os' variable
+AC_CANONICAL_HOST
+
+build_linux=no
+build_windows=no
+build_mac=no
+
+# Detect the target system
+case "${host_os}" in
+    linux*)
+        build_linux=yes
+        ;;
+    cygwin*|mingw*)
+        build_windows=yes
+        LT_INIT([win32-dll])
+        ;;
+    darwin*)
+        build_mac=yes
+        ;;
+    *)
+        AC_MSG_ERROR(["OS $host_os is not supported"])
+        ;;
+esac
+
+# Pass the conditionals to automake
+AM_CONDITIONAL([LINUX], [test "$build_linux" = "yes"])
+AM_CONDITIONAL([WINDOWS], [test "$build_windows" = "yes"])
+AM_CONDITIONAL([OSX], [test "$build_mac" = "yes"])
+
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
@@ -26,3 +55,4 @@ AC_CHECK_TYPE(socklen_t, [AC_DEFINE(HAS_SOCKLEN_T)], ,
 AC_CONFIG_FILES([Makefile
 	libenet.pc])
 AC_OUTPUT
+

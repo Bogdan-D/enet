@@ -19,4 +19,8 @@ libenet_la_SOURCES = callbacks.c compress.c host.c list.c packet.c peer.c protoc
 libenet_la_LDFLAGS = $(AM_LDFLAGS) -version-info 7:1:0
 AM_CPPFLAGS = -I$(top_srcdir)/include
 
+if WINDOWS
+    libenet_la_LDFLAGS += -no-undefined -lws2_32 -lwinmm
+endif
+
 ACLOCAL_AMFLAGS = -Im4
